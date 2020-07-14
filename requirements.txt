@@ -1,0 +1,6 @@
+numpy
+
+requests
+pprint
+lxml
+bs4

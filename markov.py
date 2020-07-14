@@ -33,7 +33,6 @@ data = open("sample.txt", encoding="utf8").read()
 strings = data.split('\n')
 
 d = {}
-all_words = []
 for s in strings:
     words = list(filter(lambda x: x.isalpha(), map(lambda x: x.lower(), s.split(' '))))
     words = list(map(lambda x: sub("ё", "е", x), words))
@@ -43,7 +42,6 @@ for s in strings:
             d[w1].append(w2)
         else:
             d[w1] = [w2]
-    all_words += words
 
 F, S, T = [], [], []
 while count_vowels(" ".join(F + S + T)) != 5 + 7 + 5:

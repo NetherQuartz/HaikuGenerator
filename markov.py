@@ -1,5 +1,7 @@
 from numpy import random
 from re import sub
+from string import punctuation
+from typing import List
 
 
 def make_pairs(w: list):
@@ -28,13 +30,33 @@ def next_word(d: dict, src: str):
         return False, ""
 
 
+def normalize_punctuation(l: List[List[str]]) -> List[List[str]]:
+    for i in range(len(l)):
+        if l[i][0] in punctuation:
+            if i > 0:
+                l[i - 1].append(l[i][0])
+            l[i].pop(0)
+    return l
+
+
+def join_punctuation(l: List[str]) -> List[str]:
+    l = l[:]
+    i = 0
+    while i < len(l):
+        if l[i] in punctuation:
+            l[i - 1] += l[i]
+            l.pop(i)
+        else:
+            i += 1
+    return l
+
 data = open("sample.txt", encoding="utf8").read()
 
 strings = data.split('\n')
 
 d = {}
 for s in strings:
-    words = list(filter(lambda x: x.isalpha(), map(lambda x: x.lower(), s.split(' '))))
+    words = list(filter(lambda x: True, map(lambda x: x.lower(), s.split(' '))))
     words = list(map(lambda x: sub("ё", "е", x), words))
     pair = make_pairs(words)
     for w1, w2 in pair:
@@ -59,6 +81,6 @@ while count_vowels(" ".join(F + S + T)) != 5 + 7 + 5:
     if count_vowels(" ".join(F)) != 5 or count_vowels(" ".join(S)) != 7 or count_vowels(" ".join(T)) != 5:
         continue
 
-print(" ".join(F))
-print(" ".join(S))
-print(" ".join(T))
+l = normalize_punctuation([F, S, T])
+for s in l:
+    print(" ".join(join_punctuation(s)))

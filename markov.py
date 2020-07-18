@@ -51,7 +51,8 @@ def join_punctuation(l: List[str]) -> List[str]:
     return l
 
 
-data = open("sample.txt", encoding="utf8").read()
+with open("sample.txt", encoding="utf8") as file:
+    data = file.read()
 
 strings = data.split('\n')
 

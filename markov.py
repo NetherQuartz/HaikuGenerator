@@ -50,6 +50,7 @@ def join_punctuation(l: List[str]) -> List[str]:
             i += 1
     return l
 
+
 data = open("sample.txt", encoding="utf8").read()
 
 strings = data.split('\n')

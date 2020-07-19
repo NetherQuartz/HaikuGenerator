@@ -3,6 +3,8 @@ from re import sub
 from string import punctuation
 from typing import List
 
+punctuation_marks = list(punctuation) + ["...", "!!!", "«", "»"]
+
 
 def make_pairs(w: list):
     for i in range(len(w) - 1):
@@ -32,7 +34,7 @@ def next_word(d: dict, src: str):
 
 def normalize_punctuation(l: List[List[str]]) -> List[List[str]]:
     for i in range(len(l)):
-        if l[i][0] in punctuation:
+        if l[i][0] in punctuation_marks:
             if i > 0:
                 l[i - 1].append(l[i][0])
             l[i].pop(0)
@@ -43,7 +45,13 @@ def join_punctuation(l: List[str]) -> List[str]:
     l = l[:]
     i = 0
     while i < len(l):
-        if l[i] in punctuation:
+        if l[i] in punctuation_marks:
+            if l[i] in ['"', '«', '»', '(', ')'] or\
+                    (i > 0 and l[i - 1][-1] in punctuation_marks):
+                l.pop(i)
+                continue
+            if l[i] == '-':
+                l[i - 1] += ' '
             l[i - 1] += l[i]
             l.pop(i)
         else:

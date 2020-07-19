@@ -4,6 +4,7 @@ from string import punctuation
 from typing import List
 
 punctuation_marks = list(punctuation) + ["...", "!!!", "«", "»"]
+terminal_marks = ["...", "!!!", ".", "!", "?"]
 
 
 def make_pairs(w: list):
@@ -59,6 +60,14 @@ def join_punctuation(l: List[str]) -> List[str]:
     return l
 
 
+def put_capital(l: List[List[str]]) -> List[List[str]]:
+    for row in l:
+        for i in range(len(row)):
+            if i == 0 or i - 1 > 0 and row[i - 1] in terminal_marks:
+                row[i] = row[i].capitalize()
+    return l
+
+
 with open("sample.txt", encoding="utf8") as file:
     data = file.read()
 
@@ -92,5 +101,6 @@ while count_vowels(" ".join(F + S + T)) != 5 + 7 + 5:
         continue
 
 l = normalize_punctuation([F, S, T])
+l = put_capital(l)
 for s in l:
     print(" ".join(join_punctuation(s)))

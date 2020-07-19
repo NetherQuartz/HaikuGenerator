@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 chain[w1] = [w2]
 
     F, S, T = [], [], []
-    while count_vowels(" ".join(F + S + T)) != 5 + 7 + 5:
+    while count_vowels(" ".join(F)) != 5 or count_vowels(" ".join(S)) != 7 or count_vowels(" ".join(T)) != 5:
         F, S, T = [], [], []
         prev = random.choice(list(chain.keys()))
         for l, n in [(F, 5), (S, 7), (T, 5)]:
@@ -132,8 +132,6 @@ if __name__ == "__main__":
                 prev = l[-1]
             else:
                 break
-        if count_vowels(" ".join(F)) != 5 or count_vowels(" ".join(S)) != 7 or count_vowels(" ".join(T)) != 5:
-            continue
 
     l = normalize_punctuation([F, S, T])
     l = put_capital(l)

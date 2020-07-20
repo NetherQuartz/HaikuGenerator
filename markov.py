@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     chain = {}
     for s in strings:
-        words = list(filter(lambda x: True, map(lambda x: x.lower(), s.split(' '))))
+        words = list(map(lambda x: x.lower(), s.split(' ')))
         words = list(map(lambda x: sub("ё", "е", x), words))
         pair = make_pairs(words)
         for w1, w2 in pair:

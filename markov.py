@@ -18,12 +18,13 @@ def make_pairs(w: list):
         yield w[i], w[i + 1]
 
 
-def count_vowels(w: str) -> int:
-    """Returns number of vowels in a given string
+def count_vowels(row: List[str]) -> int:
+    """Returns number of vowels in a given haiku row
 
-    :param w: string
+    :param row: haiku row i.e. list of strings
     :return: number of vowels
     """
+    w = " ".join(row)
     v = 0
     for c in w:
         if c in vowels:
@@ -120,12 +121,12 @@ if __name__ == "__main__":
                 chain[w1] = [w2]
 
     F, S, T = [], [], []
-    while count_vowels(" ".join(F)) != 5 or count_vowels(" ".join(S)) != 7 or count_vowels(" ".join(T)) != 5:
+    while count_vowels(F) != 5 or count_vowels(S) != 7 or count_vowels(T) != 5:
         F, S, T = [], [], []
         prev = random.choice(list(chain.keys()))
         for l, n in [(F, 5), (S, 7), (T, 5)]:
             r, s = next_word(chain, prev)
-            while r and count_vowels(" ".join(l)) < n:
+            while r and count_vowels(l) < n:
                 l.append(s)
                 r, s = next_word(chain, s)
             if len(l) > 0:

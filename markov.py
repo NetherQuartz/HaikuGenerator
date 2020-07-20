@@ -107,7 +107,7 @@ if __name__ == "__main__":
     with open("sample.txt", encoding="utf8") as file:
         data = file.read()
 
-    strings = data.split('\n')
+    strings = data.split('\n')  # get list of lines from file
 
     chain = {}
     for s in strings:
@@ -120,7 +120,7 @@ if __name__ == "__main__":
             else:
                 chain[w1] = [w2]
 
-    F, S, T = [], [], []
+    F, S, T = [], [], []  # first, second and third rows of haiku
     while count_vowels(F) != 5 or count_vowels(S) != 7 or count_vowels(T) != 5:
         F, S, T = [], [], []
         prev = random.choice(list(chain.keys()))
@@ -134,7 +134,6 @@ if __name__ == "__main__":
             else:
                 break
 
-    l = normalize_punctuation([F, S, T])
-    l = put_capital(l)
-    for s in l:
+    haiku = put_capital(normalize_punctuation([F, S, T]))
+    for s in haiku:
         print(" ".join(join_punctuation(s)))

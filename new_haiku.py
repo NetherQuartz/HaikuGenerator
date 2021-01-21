@@ -3,7 +3,7 @@ from re import sub
 from string import punctuation
 from typing import List
 
-punctuation_marks = list(punctuation) + ["...", "!!!", "«", "»"]
+punctuation_marks = list(punctuation) + ["...", "!!!", "«", "»", "—"]
 terminal_marks = ["...", "!!!", ".", "!", "?"]
 
 vowels = ['а', 'е', 'и', 'о', 'у', 'ы', 'ю', 'я']

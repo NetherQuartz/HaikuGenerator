@@ -1,8 +1,9 @@
 import requests
 import time
-from pprint import pprint
 from bs4 import BeautifulSoup
 import re
+
+from new_haiku import punctuation_marks
 
 links = []
 offset = 0
@@ -24,13 +25,12 @@ while got_len == load_batch:
     offset += got_len
     time.sleep(0.4)
 
-pprint(links[0]["dateRFC"])
-pprint(links[-1]["dateRFC"])
-print(len(links))
+print("Links exist:", len(links))
 
 haikus = []
 start = 0
-for i, e in enumerate(links[start:]):
+end = -1
+for i, e in enumerate(links[start:end]):
     print(f"\n{i + start}/{len(links)}")
     r = requests.get("https://api.dtf.ru/v1.8/entry/locate",
                      headers={
@@ -82,3 +82,34 @@ for i, e in enumerate(links[start:]):
     time.sleep(0.4)
 
 print(f"Without errors: {len(haikus)}/{len(links)}")
+
+haikus_to_write = []
+
+for haiku in haikus:
+    tokens = []
+    for line in haiku.split("\n"):
+        for word in line.split():
+            while len(word) > 0 and word[:3] in punctuation_marks:
+                tokens.append(word[:3])
+                word = word[3:]
+            while len(word) > 0 and word[0] in punctuation_marks:
+                tokens.append(word[0])
+                word = word[1:]
+            found_word = re.findall(r"(\w+(-\w+)?)", word)
+            if len(found_word) > 0:
+                tokens.append(found_word[0][0])
+                word = re.sub(r"(\w+(-\w+)?)", "", word)
+            while len(word) > 0 and word[0] in punctuation_marks:
+                if word[:3] in punctuation_marks:
+                    tokens.append(word[:3])
+                    word = word[3:]
+                else:
+                    tokens.append(word[0])
+                    word = word[1:]
+
+    h = " ".join(tokens)
+    print(h)
+    haikus_to_write.append(h)
+
+with open("dataset.txt", "w", encoding="utf8") as f:
+    f.write("\n".join(haikus_to_write))

@@ -1,4 +1,6 @@
 # HaikuGenerator
+![Pylint](https://github.com/NetherQuartz/HaikuGenerator/workflows/Pylint/badge.svg)
+
 Генерирует хокку цепью Маркова :robot:
 
 Был вдохновлён этим [постом на хабре](https://habr.com/ru/post/510798/).
@@ -14,9 +16,9 @@ $ python3 new_haiku.py
 
 ## Примеры хокку
 
-> Птицы жмутся под \
-Лапой в листьях сакуры \
-Трудна дорога
+> Блин! Скоро чистый \
+Четверг. В цветах глициний! \
+Скоро. Ну что за
 
 > Предал деревню \
 Свою и злоба, но как \

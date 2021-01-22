@@ -1,7 +1,7 @@
-from numpy import random
 from re import sub
 from string import punctuation
 from typing import List
+from numpy import random
 
 punctuation_marks = list(punctuation) + ["...", "!!!", "«", "»", "—"]
 terminal_marks = ["...", "!!!", ".", "!", "?"]
@@ -9,13 +9,13 @@ terminal_marks = ["...", "!!!", ".", "!", "?"]
 vowels = ['а', 'е', 'и', 'о', 'у', 'ы', 'ю', 'я']
 
 
-def make_pairs(w: list):
+def make_pairs(word_list: list):
     """Generates pairs of words from list following each other
 
-    :param w: list of words
+    :param word_list: list of words
     """
-    for i in range(len(w) - 1):
-        yield w[i], w[i + 1]
+    for i in range(len(word_list) - 1):
+        yield word_list[i], word_list[i + 1]
 
 
 def count_vowels(row: List[str]) -> int:
@@ -24,45 +24,44 @@ def count_vowels(row: List[str]) -> int:
     :param row: haiku row i.e. list of strings
     :return: number of vowels
     """
-    w = " ".join(row)
-    v = 0
-    for c in w:
-        if c in vowels:
-            v += 1
-    return v
+    row_s = " ".join(row)
+    vowels_count = 0
+    for ch in row_s:
+        if ch in vowels:
+            vowels_count += 1
+    return vowels_count
 
 
-def next_word(d: dict, previous: str) -> (bool, str):
+def next_word(word_dict: dict, previous: str) -> (bool, str):
     """Returns next word in Markov chain
 
-    :param d: dictionary of words
+    :param word_dict: dictionary of words
     :param previous: previous word in chain
     :return: True and next word in chain if it can be found, else False and empty string
     """
-    if previous not in d.keys() or len(d[previous]) == 0:
+    if previous not in word_dict.keys() or len(word_dict[previous]) == 0:
         return False, ""
     prob = []
-    for p in d[previous]:
-        prob.append(p)
+    for word in word_dict[previous]:
+        prob.append(word)
     if len(prob) > 0:
         return True, random.choice(prob)[:]
-    else:
-        return False, ""
+    return False, ""
 
 
-def normalize_punctuation(haiku: List[List[str]]) -> List[List[str]]:
+def normalize_punctuation(haiku_rows: List[List[str]]) -> List[List[str]]:
     """Removes punctuation marks in beginning of rows and moves them to the end of
     previous row if it exists. Edits input list too, so make sure that you've copied it.
 
-    :param haiku: list of haiku rows e.g. lists containing strings
+    :param haiku_rows: list of haiku rows e.g. lists containing strings
     :return: edited input
     """
-    for i in range(len(haiku)):
-        if haiku[i][0] in punctuation_marks:
+    for i, row in enumerate(haiku_rows):
+        if row[0] in punctuation_marks:
             if i > 0:
-                haiku[i - 1].append(haiku[i][0])
-            haiku[i].pop(0)
-    return haiku
+                haiku_rows[i - 1].append(row[0])
+            row.pop(0)
+    return haiku_rows
 
 
 def join_punctuation(row: List[str]) -> List[str]:
@@ -88,18 +87,18 @@ def join_punctuation(row: List[str]) -> List[str]:
     return row
 
 
-def put_capital(haiku: List[List[str]]) -> List[List[str]]:
+def put_capital(haiku_rows: List[List[str]]) -> List[List[str]]:
     """Capitalize first words in a row and words that are in the end of sentence.
     Edits input list too, so make sure that you've copied it.
 
-    :param haiku: list of haiku rows e.g. lists containing strings
+    :param haiku_rows: list of haiku rows e.g. lists containing strings
     :return: edited input
     """
-    for row in haiku:
-        for i in range(len(row)):
+    for row in haiku_rows:
+        for i, word in enumerate(row):
             if i == 0 or i - 1 > 0 and row[i - 1] in terminal_marks:
-                row[i] = row[i].capitalize()
-    return haiku
+                row[i] = word.capitalize()
+    return haiku_rows
 
 
 if __name__ == "__main__":

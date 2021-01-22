@@ -1,3 +1,5 @@
+"""Generates haikus by using Markov chain"""
+
 from re import sub
 from string import punctuation
 from typing import List
@@ -26,8 +28,8 @@ def count_vowels(row: List[str]) -> int:
     """
     row_s = " ".join(row)
     vowels_count = 0
-    for ch in row_s:
-        if ch in vowels:
+    for char in row_s:
+        if char in vowels:
             vowels_count += 1
     return vowels_count
 

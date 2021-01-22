@@ -79,10 +79,10 @@ if __name__ == "__main__":
                     STR_BUF += "\n".join(strings)
 
             if len(STR_BUF.split("\n")) < 3:
-                raise Exception
+                raise TypeError
             haikus.append(STR_BUF)
             print(STR_BUF, "\n")
-        except (TypeError, Exception):
+        except TypeError:
             print("ERROR:", f"{ERROR.strip()}")
 
         time.sleep(0.4)

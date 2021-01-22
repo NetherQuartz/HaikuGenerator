@@ -33,7 +33,8 @@ if __name__ == "__main__":
     print("Links exist:", len(links))
 
     haikus = []
-    START = 300
+
+    START = 0
     END = -1
     for i, e in enumerate(links[START:END]):
         print(f"\n{i + START}/{len(links)}")

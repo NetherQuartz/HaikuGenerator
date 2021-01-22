@@ -1,8 +1,8 @@
 """Downloads and parses haikus by using DTF.ru API"""
 
 import time
-from bs4 import BeautifulSoup
 import re
+from bs4 import BeautifulSoup
 import requests
 from new_haiku import punctuation_marks
 
@@ -12,37 +12,39 @@ if __name__ == "__main__":
     LOAD_BATCH = 50
 
     links = []
-    got_len = LOAD_BATCH
+    GOT_LEN = LOAD_BATCH
 
-    while got_len == LOAD_BATCH:
-        r = requests.get("https://api.dtf.ru/v1.8/user/157777/entries",
-                         headers={
-                             'User-Agent': "hokku-app/1.0 (Mi Notebook Pro; Windows/10; ru; 1980x1080)",
-                         },
-                         params={
-                             "count": str(LOAD_BATCH),
-                             "offset": str(OFFSET)
-                         }).json()
+    while GOT_LEN == LOAD_BATCH:
+        r = requests.get(
+            "https://api.dtf.ru/v1.8/user/157777/entries",
+            headers={
+                'User-Agent': "hokku-app/1.0 (Mi Notebook Pro; Windows/10; ru; 1980x1080)",
+            },
+            params={
+                "count": str(LOAD_BATCH),
+                "offset": str(OFFSET)
+            }).json()
         links += r["result"]
         print(len(r['result']))
-        got_len = len(r["result"])
-        OFFSET += got_len
+        GOT_LEN = len(r["result"])
+        OFFSET += GOT_LEN
         time.sleep(0.4)
 
     print("Links exist:", len(links))
 
     haikus = []
-    START = 0
+    START = 300
     END = -1
     for i, e in enumerate(links[START:END]):
         print(f"\n{i + START}/{len(links)}")
-        r = requests.get("https://api.dtf.ru/v1.8/entry/locate",
-                         headers={
-                             'User-Agent': "hokku-app/1.0 (Mi Notebook Pro; Windows/10; ru; 1980x1080)",
-                         },
-                         params={
-                             "url": e["url"]
-                         }).json()
+        r = requests.get(
+            "https://api.dtf.ru/v1.8/entry/locate",
+            headers={
+                'User-Agent': "hokku-app/1.0 (Mi Notebook Pro; Windows/10; ru; 1980x1080)",
+            },
+            params={
+                "url": e["url"]
+            }).json()
         html = r["result"]["entryContent"]["html"]
         soup = BeautifulSoup(html, 'lxml')
         div = soup.select_one("div.content")
@@ -61,11 +63,11 @@ if __name__ == "__main__":
             CHILDREN = list(div3.children)
         elif len(div2) > 0:
             for c in div2:
-                CHILDREN += list(c.CHILDREN)
+                CHILDREN += list(c.children)
         else:
             CHILDREN = None
 
-        str_buf = ""
+        STR_BUF = ""
 
         try:
             for c in CHILDREN:
@@ -73,14 +75,14 @@ if __name__ == "__main__":
                 strings = [re.sub(r"<[^<>]+>", "", s).strip() for s in strings]
                 strings = list(filter(lambda x: x != "" and re.match(r"^\s*$", x) is None, strings))
                 if len(strings) > 0:
-                    str_buf += "\n" if str_buf != "" else ""
-                    str_buf += "\n".join(strings)
+                    STR_BUF += "\n" if STR_BUF != "" else ""
+                    STR_BUF += "\n".join(strings)
 
-            if len(str_buf.split("\n")) < 3:
+            if len(STR_BUF.split("\n")) < 3:
                 raise Exception
-            haikus.append(str_buf)
-            print(str_buf, "\n")
-        except:
+            haikus.append(STR_BUF)
+            print(STR_BUF, "\n")
+        except (TypeError, Exception):
             print("ERROR:", f"{ERROR.strip()}")
 
         time.sleep(0.4)

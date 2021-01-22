@@ -104,7 +104,7 @@ def put_capital(haiku: List[List[str]]) -> List[List[str]]:
 
 if __name__ == "__main__":
 
-    with open("sample.txt", encoding="utf8") as file:
+    with open("dataset.txt", encoding="utf8") as file:
         data = file.read()
 
     strings = data.split('\n')  # get list of lines from file

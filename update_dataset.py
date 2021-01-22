@@ -1,37 +1,37 @@
-import requests
 import time
 from bs4 import BeautifulSoup
 import re
-
+import requests
 from new_haiku import punctuation_marks
 
-links = []
-offset = 0
-load_batch = 50
-got_len = load_batch
+OFFSET = 0
+LOAD_BATCH = 50
 
-while got_len == load_batch:
+links = []
+got_len = LOAD_BATCH
+
+while got_len == LOAD_BATCH:
     r = requests.get("https://api.dtf.ru/v1.8/user/157777/entries",
                      headers={
                          'User-Agent': "hokku-app/1.0 (Mi Notebook Pro; Windows/10; ru; 1980x1080)",
                      },
                      params={
-                         "count": str(load_batch),
-                         "offset": str(offset)
+                         "count": str(LOAD_BATCH),
+                         "offset": str(OFFSET)
                      }).json()
     links += r["result"]
     print(len(r['result']))
     got_len = len(r["result"])
-    offset += got_len
+    OFFSET += got_len
     time.sleep(0.4)
 
 print("Links exist:", len(links))
 
 haikus = []
-start = 0
-end = -1
-for i, e in enumerate(links[start:end]):
-    print(f"\n{i + start}/{len(links)}")
+START = 0
+END = -1
+for i, e in enumerate(links[START:END]):
+    print(f"\n{i + START}/{len(links)}")
     r = requests.get("https://api.dtf.ru/v1.8/entry/locate",
                      headers={
                          'User-Agent': "hokku-app/1.0 (Mi Notebook Pro; Windows/10; ru; 1980x1080)",
@@ -42,7 +42,7 @@ for i, e in enumerate(links[start:end]):
     html = r["result"]["entryContent"]["html"]
     soup = BeautifulSoup(html, 'lxml')
     div = soup.select_one("div.content")
-    er = str(div.text)
+    ERROR = str(div.text)
 
     div1 = div.select_one(".block-incut__text")
 
@@ -50,34 +50,34 @@ for i, e in enumerate(links[start:end]):
 
     div3 = div.select_one("div.block-quote__text")
 
-    children = []
+    CHILDREN = []
     if div1 is not None:
-        children = list(div1.children)
+        CHILDREN = list(div1.children)
     elif div3 is not None:
-        children = list(div3.children)
+        CHILDREN = list(div3.children)
     elif len(div2) > 0:
         for c in div2:
-            children += list(c.children)
+            CHILDREN += list(c.CHILDREN)
     else:
-        children = None
+        CHILDREN = None
 
-    st = ""
+    str_buf = ""
 
     try:
-        for c in children:
+        for c in CHILDREN:
             strings = re.split(r"<br\s?/?>", str(c))
             strings = [re.sub(r"<[^<>]+>", "", s).strip() for s in strings]
             strings = list(filter(lambda x: x != "" and re.match(r"^\s*$", x) is None, strings))
             if len(strings) > 0:
-                st += "\n" if st != "" else ""
-                st += "\n".join(strings)
+                str_buf += "\n" if str_buf != "" else ""
+                str_buf += "\n".join(strings)
 
-        if len(st.split("\n")) < 3:
+        if len(str_buf.split("\n")) < 3:
             raise Exception
-        haikus.append(st)
-        print(st, "\n")
+        haikus.append(str_buf)
+        print(str_buf, "\n")
     except:
-        print("ERROR:", f"{er.strip()}")
+        print("ERROR:", f"{ERROR.strip()}")
 
     time.sleep(0.4)
 
@@ -107,9 +107,9 @@ for haiku in haikus:
                     tokens.append(word[0])
                     word = word[1:]
 
-    h = " ".join(tokens)
-    print(h)
-    haikus_to_write.append(h)
+    H = " ".join(tokens)
+    print(H)
+    haikus_to_write.append(H)
 
 with open("dataset.txt", "w", encoding="utf8") as f:
     f.write("\n".join(haikus_to_write))
